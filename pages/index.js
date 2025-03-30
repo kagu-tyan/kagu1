@@ -5,10 +5,12 @@ export default function KaguChanChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const bottomRef = useRef(null);
+  const chatBoxRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
   }, [messages]);
 
   const sendMessage = async () => {
@@ -59,15 +61,33 @@ export default function KaguChanChat() {
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
       <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする（ツンデレ強化版）</h1>
-      <div style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
+      
+      {/* チャット表示エリア（スクロール対象） */}
+      <div
+        ref={chatBoxRef}
+        style={{
+          height: "300px",
+          overflowY: "auto",
+          border: "1px solid #eee",
+          padding: "1rem",
+          backgroundColor: "#fff",
+          marginBottom: "1rem"
+        }}
+      >
         {messages.map((msg, idx) => (
-          <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
+          <div
+            key={idx}
+            style={{
+              textAlign: msg.role === "user" ? "right" : "left",
+              color: msg.role === "assistant" ? "#d63384" : "#000"
+            }}
+          >
             <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
           </div>
         ))}
-        {/* 自動スクロールのための ref */}
-        <div ref={bottomRef} />
       </div>
+
+      {/* 入力欄とボタン */}
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <input
           type="text"
