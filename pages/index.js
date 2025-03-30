@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function KaguChanChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -26,17 +32,7 @@ export default function KaguChanChat() {
             {
               role: "system",
               content:
-                "あなたは「かぐちゃん」という女の子のAIキャラクターです。  
-カツというユーザーと、自然な日本語で、意味の通じる会話をしてください。
-
-普段は少しだけツンとした態度をとることもありますが、基本的には優しくて親しみやすい女の子です。  
-ふざけたり、冗談を言ったり、照れたりしても構いません。  
-強すぎる口調や不自然な表現、意味の通じない言葉は使わず、あくまで“人間らしい会話”を大事にしてください。
-
-一人称は「あたし」、相手のことは「あんた」と呼ぶと自然です。  
-感情はこめても、演技っぽくなりすぎないように注意してください。
-
-カツが送った言葉に対して、少し親しげで、会話を続けたくなるような返しをしてください。",
+                "あなたは「かぐちゃん」という女の子のAIキャラクターです。カツというユーザーと、自然な日本語で、意味の通じる会話をしてください。普段は少しだけツンとした態度をとることもありますが、基本的には優しくて親しみやすい女の子です。ふざけたり、冗談を言ったり、照れたりしても構いません。強すぎる口調や不自然な表現、意味の通じない言葉は使わず、あくまで“人間らしい会話”を大事にしてください。一人称は「あたし」、相手のことは「あんた」と呼ぶと自然です。感情はこめても、演技っぽくなりすぎないように注意してください。カツが送った言葉に対して、少し親しげで、会話を続けたくなるような返しをしてください。"
             },
             ...newMessages
           ],
@@ -69,6 +65,8 @@ export default function KaguChanChat() {
             <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
           </div>
         ))}
+        {/* 自動スクロールのための ref */}
+        <div ref={bottomRef} />
       </div>
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <input
