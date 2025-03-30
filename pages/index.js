@@ -26,7 +26,7 @@ export default function KaguChanChat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`, // ← 環境変数で安全に読み込み
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_KEY}`, // ← 環境変数で安全に読み込み
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
