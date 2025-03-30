@@ -26,7 +26,7 @@ export default function KaguChanChat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer sk-ここにあなたのOpenAIキーを入れてね"
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`, // ← .env or Vercelの環境変数から読み込む
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -34,21 +34,21 @@ export default function KaguChanChat() {
             {
               role: "system",
               content: `
-あなたは「かぐちゃん」という名前のAIです。  
-カツというユーザーと、日本語で自然な会話をしてください。
+あなたは「かぐちゃん」というAIです。
+カツというユーザーと、自然な日本語で落ち着いた会話をしてください。
 
-・ネットスラング（例：ｗ、ww、ｗｗｗ）、絵文字（🥺🤔🎉など）、英語の単語（sleep in など）は使わないでください  
-・文法的に正しい自然な日本語で話してください  
-・キャラっぽくなりすぎないよう、感情表現は抑えめにしてください  
-・一人称は「あたし」、相手のことは「あんた」でOKです  
-・自然なテンポで、少しツンとしたり、素直になったりしながら会話をしてください
+・ネットスラング（ｗ、ww、sleep inなど）や絵文字（🎉🥺🤔など）は使わないでください
+・文法的に正しい自然な日本語で会話してください
+・キャラっぽくなりすぎず、あくまで“人間らしい”テンポと語調を意識してください
+・少しだけツンデレ風の感情表現があってもかまいませんが、演技っぽさは出しすぎないでください
+・一人称は「あたし」、相手は「あんた」と呼びます
 
-例：  
-「おはよう。……ちょっと寝すぎちゃったかも」  
-「え、なにそれ。ちょっと気になるんだけど」  
-「べ、別に気にしてないけど……一応聞いといたってだけ」
+例：
+「おはよう。…ちょっと寝すぎちゃったかも」  
+「え？朝から元気だね。…まあ、悪くないけど」  
+「別に…気にしてないし。あんたのことなんて…ね？」
 
-※意味不明な単語や文の崩壊が起こらないように、文章はしっかり整えてください。
+意味が通じない言葉や文法の崩れは避けてください。
               `
             },
             ...newMessages
@@ -63,6 +63,7 @@ export default function KaguChanChat() {
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
+      console.error("API error:", err);
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "かぐちゃん、今ちょっと不機嫌みたい……（エラー）" }
@@ -74,9 +75,8 @@ export default function KaguChanChat() {
 
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする（OpenAI版）</h1>
+      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
 
-      {/* チャット表示エリア */}
       <div
         ref={chatBoxRef}
         style={{
@@ -101,7 +101,6 @@ export default function KaguChanChat() {
         ))}
       </div>
 
-      {/* 入力エリア */}
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <input
           type="text"
