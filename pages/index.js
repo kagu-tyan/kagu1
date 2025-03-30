@@ -63,7 +63,7 @@ export default function KaguChanChat() {
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
-      console.error("API error:", err);
+      console.error("API error:", err);//
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "かぐちゃん、今ちょっと不機嫌みたい……（エラー）" }
