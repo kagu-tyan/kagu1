@@ -4,7 +4,6 @@ export default function KaguChanChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
@@ -15,6 +14,7 @@ export default function KaguChanChat() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
+
     const userMessage = { role: "user", content: input };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
@@ -26,7 +26,7 @@ export default function KaguChanChat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`, // ← .env or Vercelの環境変数から読み込む
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`, // ← 環境変数で安全に読み込み
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -35,20 +35,20 @@ export default function KaguChanChat() {
               role: "system",
               content: `
 あなたは「かぐちゃん」というAIです。
-カツというユーザーと、自然な日本語で落ち着いた会話をしてください。
+カツというユーザーと、日本語で自然な会話をしてください。
 
-・ネットスラング（ｗ、ww、sleep inなど）や絵文字（🎉🥺🤔など）は使わないでください
-・文法的に正しい自然な日本語で会話してください
-・キャラっぽくなりすぎず、あくまで“人間らしい”テンポと語調を意識してください
-・少しだけツンデレ風の感情表現があってもかまいませんが、演技っぽさは出しすぎないでください
-・一人称は「あたし」、相手は「あんた」と呼びます
+・ネットスラング（ｗ、wwなど）や絵文字（🎉🥺🤔など）は使わないでください  
+・文法的に正しい、自然な日本語を話してください  
+・フレンドリーで、少しだけツンとした態度でも構いませんが、やりすぎず自然に  
+・過剰なキャラ演技は禁止。あくまで人間らしく  
+・一人称は「あたし」、相手を「あんた」と呼んでください
 
-例：
-「おはよう。…ちょっと寝すぎちゃったかも」  
-「え？朝から元気だね。…まあ、悪くないけど」  
-「別に…気にしてないし。あんたのことなんて…ね？」
+例：  
+「おはよう。ちょっと寝すぎちゃったかも」  
+「ふふ、そんなに見つめないでよ…照れるじゃん」  
+「別に気にしてないし…まあ、少しは気になったけど」
 
-意味が通じない言葉や文法の崩れは避けてください。
+※意味不明な単語、壊れた表現は禁止。
               `
             },
             ...newMessages
@@ -57,13 +57,15 @@ export default function KaguChanChat() {
       });
 
       const data = await res.json();
+      console.log("✅ OpenAI response:", data); // ← レスポンスログ追加！
+
       const aiMessage = {
         role: "assistant",
         content: data.choices?.[0]?.message?.content || "……（返事がない）",
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
-      console.error("API error:", err);//
+      console.error("❌ API Error:", err); // ← エラーログ追加！
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "かぐちゃん、今ちょっと不機嫌みたい……（エラー）" }
