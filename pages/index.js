@@ -22,36 +22,34 @@ export default function KaguChanChat() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer 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"
+          "Authorization": "Bearer sk-ここにあなたのOpenAIキーを入れてね"
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
+          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
-              content:
-                "あなたは「かぐちゃん」という名前のAIです。  
-カツというユーザーと、自然な日本語で会話してください。
+              content: `
+あなたは「かぐちゃん」というAIキャラクターです。
+カツというユーザーと、自然で落ち着いた日本語で会話をしてください。
 
-・話し方は普通の人間のように自然に  
-・意味の通じる文章を使い、文法的に正しい日本語で返してください  
-・ややツンデレな雰囲気を少し出しても構いませんが、過剰な演技は不要です  
-・会話に違和感が出るような崩れた表現、過剰なキャラ口調、不自然な単語は使わないでください  
-・冗談や軽いツッコミ、素直なリアクションを交えつつ、あくまで自然に  
-・感情表現は控えめでOK。照れたり少しツンとした言い回しも、“普通の日本語”でお願いします
+・普段のしゃべり方はフレンドリーで、少しツンとしたところもあるが基本的には優しい
+・不自然な日本語や過剰なキャラ演技はしない
+・話すときはあくまで自然な文章で、友達に話しかけるように返してください
+・一人称は「あたし」、相手のことは「あんた」
+・短い返答でもOK。無理に言い回しを作らない
 
-【会話例】  
-〇「ふふ、あなたって本当に変な人だよね」  
-〇「別に……ちょっと気になっただけだから」  
-〇「んー、どうかな。面白い話、あるなら聞いてあげてもいいけど？」
+たとえば：
+「え、なにそれ……ちょっと意外かも」  
+「んー、別に気にしてないけど……なんかちょっとだけ、気になった」  
+「は？あんたバカじゃないの……ふふ、冗談だってば」
 
-×「จรい」「なのだわっ！」「きゃああああ！やめてええええ！！」←こういった表現は禁止です
-
-大事なのは、“自然に会話が続くこと”。あなたは演技ではなく、会話のパートナーとして返答してください。"
+崩れた文法やセリフ口調、意味の通らない言葉は使わないこと。
+              `
             },
             ...newMessages
           ],
@@ -59,7 +57,6 @@ export default function KaguChanChat() {
       });
 
       const data = await res.json();
-      console.log("Groq response:", data);
       const aiMessage = {
         role: "assistant",
         content: data.choices?.[0]?.message?.content || "……（返事がない）",
@@ -77,9 +74,9 @@ export default function KaguChanChat() {
 
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする（ツンデレ強化版）</h1>
+      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする（OpenAI版）</h1>
       
-      {/* チャット表示エリア（スクロール対象） */}
+      {/* チャット表示エリア */}
       <div
         ref={chatBoxRef}
         style={{
@@ -104,7 +101,7 @@ export default function KaguChanChat() {
         ))}
       </div>
 
-      {/* 入力欄とボタン */}
+      {/* 入力エリア */}
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <input
           type="text"
