@@ -155,7 +155,7 @@ export default function KaguChanChat() {
       <div
         style={{
           position: "absolute",
-bottom: "calc(4rem + 340px)",
+bottom: "calc(4rem + 600px)",
 left: "50%",
 transform: "translateX(-50%)",
         }}
