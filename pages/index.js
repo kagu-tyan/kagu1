@@ -132,42 +132,45 @@ export default function KaguChanChat() {
         padding: "2rem 1rem",
       }}
     >
-      <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem", backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px" }}>
-        <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
-
-        {/* 表情画像 */}
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "1rem", backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px", display: "flex", gap: "2rem" }}>
+        {/* 左サイド：立ち絵 */}
+        <div style={{ flexShrink: 0 }}>
           <img
-            src={`/images/kagu/${emotion}.png`}
-            alt="かぐちゃんの表情"
+            src={`/images/kagu/full/${emotion}.png`}
+            alt="かぐちゃんの立ち絵"
             style={{ width: "200px", height: "auto" }}
           />
         </div>
 
-        <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
-          {messages.map((msg, idx) => (
-            <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
-              <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
-            </div>
-          ))}
-        </div>
+        {/* 右側：チャットとUI */}
+        <div style={{ flex: 1 }}>
+          <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
 
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="カツ：今日も話そっか"
-            style={{ flex: 1, padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={loading}
-            style={{ backgroundColor: "#d63384", color: "#fff", padding: "0.5rem 1rem", borderRadius: "4px", border: "none" }}
-          >
-            {loading ? "送信中…" : "送信"}
-          </button>
+          <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
+            {messages.map((msg, idx) => (
+              <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
+                <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="カツ：今日も話そっか"
+              style={{ flex: 1, padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={loading}
+              style={{ backgroundColor: "#d63384", color: "#fff", padding: "0.5rem 1rem", borderRadius: "4px", border: "none" }}
+            >
+              {loading ? "送信中…" : "送信"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
