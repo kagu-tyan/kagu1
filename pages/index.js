@@ -14,11 +14,25 @@ export default function KaguChanChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [emotion, setEmotion] = useState("normal");
+  const [timeOfDay, setTimeOfDay] = useState("morning");
 
   const chatBoxRef = useRef(null);
   const [typingIndex, setTypingIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const typingRef = useRef("");
+
+  const backgrounds = {
+    morning: "/bg_classroom_morning.png",
+    noon: "/bg_rooftop_noon.png",
+    evening: "/bg_classroom_evening.png",
+  };
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 12) setTimeOfDay("morning");
+    else if (hour >= 12 && hour < 17) setTimeOfDay("noon");
+    else setTimeOfDay("evening");
+  }, []);
 
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -109,42 +123,52 @@ export default function KaguChanChat() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
+    <div
+      style={{
+        backgroundImage: `url(${backgrounds[timeOfDay]})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "2rem 1rem",
+      }}
+    >
+      <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem", backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px" }}>
+        <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
 
-      {/* 表情画像 */}
-      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-        <img
-          src={`/images/kagu/${emotion}.png`}
-          alt="かぐちゃんの表情"
-          style={{ width: "200px", height: "auto" }}
-        />
-      </div>
+        {/* 表情画像 */}
+        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+          <img
+            src={`/images/kagu/${emotion}.png`}
+            alt="かぐちゃんの表情"
+            style={{ width: "200px", height: "auto" }}
+          />
+        </div>
 
-      <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
-        {messages.map((msg, idx) => (
-          <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
-            <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
-          </div>
-        ))}
-      </div>
+        <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
+          {messages.map((msg, idx) => (
+            <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
+              <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
+            </div>
+          ))}
+        </div>
 
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="カツ：今日も話そっか"
-          style={{ flex: 1, padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          style={{ backgroundColor: "#d63384", color: "#fff", padding: "0.5rem 1rem", borderRadius: "4px", border: "none" }}
-        >
-          {loading ? "送信中…" : "送信"}
-        </button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="カツ：今日も話そっか"
+            style={{ flex: 1, padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button
+            onClick={sendMessage}
+            disabled={loading}
+            style={{ backgroundColor: "#d63384", color: "#fff", padding: "0.5rem 1rem", borderRadius: "4px", border: "none" }}
+          >
+            {loading ? "送信中…" : "送信"}
+          </button>
+        </div>
       </div>
     </div>
   );
