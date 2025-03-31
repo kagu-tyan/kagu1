@@ -133,7 +133,10 @@ export default function KaguChanChat() {
         backgroundPosition: "center",
         minHeight: "100vh",
         overflow: "hidden",
-        padding: "2rem 1rem 4rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        padding: "2rem 1rem 2rem",
       }}
     >
       {/* 背景に配置されたかぐちゃん立ち絵 */}
@@ -155,7 +158,7 @@ export default function KaguChanChat() {
       <div
         style={{
           position: "absolute",
-          bottom: "calc(4rem + 720px)",
+          bottom: "calc(2rem + 420px)",
           left: "500px",
           maxWidth: "300px",
           backgroundColor: "white",
