@@ -155,9 +155,14 @@ export default function KaguChanChat() {
       <div
         style={{
           position: "absolute",
-bottom: "calc(4rem + 600px)",
-left: "50%",
-transform: "translateX(-50%)",
+          bottom: "calc(4rem + 340px)",
+          left: "220px",
+          maxWidth: "300px",
+          backgroundColor: "white",
+          padding: "0.75rem 1rem",
+          borderRadius: "12px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+          zIndex: 3,
         }}
       >
         <p style={{ margin: 0, color: "#d63384" }}>{latestAssistantMessage}</p>
