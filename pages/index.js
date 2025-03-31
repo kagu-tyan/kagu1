@@ -122,6 +122,8 @@ export default function KaguChanChat() {
     }
   };
 
+  const latestAssistantMessage = messages.slice().reverse().find(msg => msg.role === "assistant")?.content || "";
+
   return (
     <div
       style={{
@@ -130,9 +132,29 @@ export default function KaguChanChat() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
         padding: "2rem 1rem",
       }}
     >
+      {/* 吹き出し */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "20vh",
+          left: "220px",
+          maxWidth: "300px",
+          backgroundColor: "white",
+          padding: "0.75rem 1rem",
+          borderRadius: "12px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+          zIndex: 3,
+        }}
+      >
+        <p style={{ margin: 0, color: "#d63384" }}>{latestAssistantMessage}</p>
+      </div>
+
       {/* 背景に配置されたかぐちゃん立ち絵 */}
       <img
         src={`/images/kagu/full/${emotion}.png`}
@@ -149,8 +171,6 @@ export default function KaguChanChat() {
       />
 
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem", backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px", position: "relative", zIndex: 2 }}>
-        <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
-
         <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
           {messages.map((msg, idx) => (
             <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
