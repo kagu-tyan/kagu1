@@ -10,6 +10,20 @@ export default function KaguChanChat() {
   const [isTyping, setIsTyping] = useState(false);
   const typingRef = useRef("");
 
+  const [timeOfDay, setTimeOfDay] = useState("morning");
+  const backgrounds = {
+    morning: "/bg_classroom_morning.jpg",
+    noon: "/bg_rooftop_noon.jpg",
+    evening: "/bg_classroom_evening.jpg",
+  };
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 12) setTimeOfDay("morning");
+    else if (hour >= 12 && hour < 17) setTimeOfDay("noon");
+    else setTimeOfDay("evening");
+  }, []);
+
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
@@ -63,3 +77,57 @@ export default function KaguChanChat() {
 ▼ 口調
 ・一人称は「わたし」、カツのことは「カツ」と呼ぶ
 ・丁寧すぎず、自然なカジュアルな口調
+              `,
+            },
+            ...newMessages,
+          ],
+        }),
+      });
+
+      const data = await res.json();
+      const reply = data.choices[0].message.content;
+
+      typingRef.current = reply;
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      setTypingIndex(0);
+      setIsTyping(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      className="chat-screen"
+      style={{
+        backgroundImage: `url(${backgrounds[timeOfDay]})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        ref={chatBoxRef}
+        className="chat-box"
+        style={{ padding: "1rem", overflowY: "scroll", maxHeight: "80vh" }}
+      >
+        {messages.map((msg, i) => (
+          <div key={i} style={{ marginBottom: "1rem" }}>
+            <strong>{msg.role === "user" ? "カツ" : "かぐちゃん"}：</strong> {msg.content}
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", padding: "1rem" }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          style={{ flex: 1, marginRight: "0.5rem" }}
+        />
+        <button onClick={sendMessage} disabled={loading}>送信</button>
+      </div>
+    </div>
+  );
+}
