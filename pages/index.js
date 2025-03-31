@@ -155,8 +155,8 @@ export default function KaguChanChat() {
       <div
         style={{
           position: "absolute",
-          bottom: "calc(4rem + 600px)",
-          left: "440px",
+          bottom: "calc(4rem + 800px)",
+          left: "600px",
           maxWidth: "300px",
           backgroundColor: "white",
           padding: "0.75rem 1rem",
