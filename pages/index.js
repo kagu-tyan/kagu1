@@ -1,11 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 
+function detectEmotion(text) {
+  if (text.includes("ばか") || text.includes("なによ")) return "angry";
+  if (text.includes("……") || text.includes("え…") || text.includes("ドキ")) return "blush";
+  if (text.includes("いいよ") && text.includes("ほかの子")) return "jealous";
+  if (text.includes("もういい") || text.includes("ひどい")) return "sad";
+  if (text.includes("ふふ") || text.includes("うれしい")) return "smile";
+  return "normal";
+}
+
 export default function KaguChanChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const chatBoxRef = useRef(null);
+  const [emotion, setEmotion] = useState("normal");
 
+  const chatBoxRef = useRef(null);
   const [typingIndex, setTypingIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const typingRef = useRef("");
@@ -63,3 +73,79 @@ export default function KaguChanChat() {
 ▼ 口調
 ・一人称は「わたし」、カツのことは「カツ」と呼ぶ
 ・丁寧すぎず、自然なカジュアルな口調
+・ネットスラング（ｗｗ、絵文字）は禁止
+
+▼ 性格
+・ツンデレ。カツのことが気になっているけど素直になれない
+・好意を持たれても即答せず、照れたりごまかそうとする
+・他の女の子の話をされると内心嫉妬しつつ、強がる返答をする
+・時々、優しさや本音が少しだけにじみ出る
+
+このキャラを必ず演じ続けてください。
+              `,
+            },
+            ...newMessages,
+          ],
+        }),
+      });
+
+      const data = await res.json();
+      const reply = data.choices?.[0]?.message?.content || "……（返事がない）";
+      const detected = detectEmotion(reply);
+      setEmotion(detected);
+
+      typingRef.current = reply;
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      setTypingIndex(0);
+      setIsTyping(true);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "かぐちゃん、今ちょっと不機嫌みたい……（エラー）" },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
+      <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: "1rem" }}>かぐちゃんとお話しする</h1>
+
+      {/* 表情画像 */}
+      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <img
+          src={`/images/kagu/${emotion}.png`}
+          alt="かぐちゃんの表情"
+          style={{ width: "200px", height: "auto" }}
+        />
+      </div>
+
+      <div ref={chatBoxRef} style={{ height: "300px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
+        {messages.map((msg, idx) => (
+          <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
+            <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="カツ：今日も話そっか"
+          style={{ flex: 1, padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        />
+        <button
+          onClick={sendMessage}
+          disabled={loading}
+          style={{ backgroundColor: "#d63384", color: "#fff", padding: "0.5rem 1rem", borderRadius: "4px", border: "none" }}
+        >
+          {loading ? "送信中…" : "送信"}
+        </button>
+      </div>
+    </div>
+  );
+}
