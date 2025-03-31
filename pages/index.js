@@ -169,7 +169,7 @@ export default function KaguChanChat() {
       </div>
 
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem", backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px", position: "relative", zIndex: 2 }}>
-        <div ref={chatBoxRef} style={{ height: "200px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", justifyContent: "flex-end", marginBottom: "1rem" }}>
+        <div ref={chatBoxRef} style={{ height: "200px", overflowY: "auto", border: "1px solid #eee", padding: "1rem", backgroundColor: "#fff", marginBottom: "1rem" }}>
           {messages.map((msg, idx) => (
             <div key={idx} style={{ textAlign: msg.role === "user" ? "right" : "left", color: msg.role === "assistant" ? "#d63384" : "#000" }}>
               <p style={{ marginBottom: "0.5rem" }}>{msg.content}</p>
