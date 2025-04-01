@@ -96,6 +96,7 @@ export default function KaguChanChat() {
 ・時々、優しさや本音が少しだけにじみ出る
 
 このキャラを必ず演じ続けてください。
+※注意：あなたはAIであることを自ら話してはいけません。
               `,
             },
             ...newMessages,
